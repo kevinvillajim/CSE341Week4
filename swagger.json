@@ -13,6 +13,11 @@
 			"type": "apiKey",
 			"in": "cookie",
 			"name": "connect.sid"
+		},
+		"apiKeyAuth": {
+			"type": "apiKey",
+			"in": "header",
+			"name": "X-API-Key"
 		}
 	},
 	"tags": [
@@ -97,13 +102,23 @@
 			"post": {
 				"tags": ["Items"],
 				"summary": "Create a new item",
-				"description": "Creates a new item in the database",
+				"description": "Creates a new item in the database. Requires authentication via session cookie or API key.",
 				"security": [
 					{
 						"cookieAuth": []
+					},
+					{
+						"apiKeyAuth": []
 					}
 				],
 				"parameters": [
+					{
+						"in": "header",
+						"name": "X-API-Key",
+						"description": "API Key for authentication (alternative to session cookie)",
+						"required": false,
+						"type": "string"
+					},
 					{
 						"in": "body",
 						"name": "body",
@@ -181,10 +196,13 @@
 			"put": {
 				"tags": ["Items"],
 				"summary": "Update an item",
-				"description": "Updates an existing item by its ID",
+				"description": "Updates an existing item by its ID. Requires authentication via session cookie or API key.",
 				"security": [
 					{
 						"cookieAuth": []
+					},
+					{
+						"apiKeyAuth": []
 					}
 				],
 				"parameters": [
@@ -194,6 +212,13 @@
 						"required": true,
 						"type": "string",
 						"description": "ID of the item to update"
+					},
+					{
+						"in": "header",
+						"name": "X-API-Key",
+						"description": "API Key for authentication (alternative to session cookie)",
+						"required": false,
+						"type": "string"
 					},
 					{
 						"in": "body",
@@ -234,10 +259,13 @@
 			"delete": {
 				"tags": ["Items"],
 				"summary": "Delete an item",
-				"description": "Deletes an existing item by its ID",
+				"description": "Deletes an existing item by its ID. Requires authentication via session cookie or API key.",
 				"security": [
 					{
 						"cookieAuth": []
+					},
+					{
+						"apiKeyAuth": []
 					}
 				],
 				"parameters": [
@@ -247,6 +275,13 @@
 						"required": true,
 						"type": "string",
 						"description": "ID of the item to delete"
+					},
+					{
+						"in": "header",
+						"name": "X-API-Key",
+						"description": "API Key for authentication (alternative to session cookie)",
+						"required": false,
+						"type": "string"
 					}
 				],
 				"responses": {
@@ -293,13 +328,23 @@
 			"post": {
 				"tags": ["Users"],
 				"summary": "Create a new user",
-				"description": "Creates a new user in the database",
+				"description": "Creates a new user in the database. Requires authentication via session cookie or API key.",
 				"security": [
 					{
 						"cookieAuth": []
+					},
+					{
+						"apiKeyAuth": []
 					}
 				],
 				"parameters": [
+					{
+						"in": "header",
+						"name": "X-API-Key",
+						"description": "API Key for authentication (alternative to session cookie)",
+						"required": false,
+						"type": "string"
+					},
 					{
 						"in": "body",
 						"name": "body",
@@ -375,10 +420,13 @@
 			"put": {
 				"tags": ["Users"],
 				"summary": "Update a user",
-				"description": "Updates an existing user by its ID",
+				"description": "Updates an existing user by its ID. Requires authentication via session cookie or API key.",
 				"security": [
 					{
 						"cookieAuth": []
+					},
+					{
+						"apiKeyAuth": []
 					}
 				],
 				"parameters": [
@@ -388,6 +436,13 @@
 						"required": true,
 						"type": "string",
 						"description": "ID of the user to update"
+					},
+					{
+						"in": "header",
+						"name": "X-API-Key",
+						"description": "API Key for authentication (alternative to session cookie)",
+						"required": false,
+						"type": "string"
 					},
 					{
 						"in": "body",
@@ -428,10 +483,13 @@
 			"delete": {
 				"tags": ["Users"],
 				"summary": "Delete a user",
-				"description": "Deletes an existing user by its ID",
+				"description": "Deletes an existing user by its ID. Requires authentication via session cookie or API key.",
 				"security": [
 					{
 						"cookieAuth": []
+					},
+					{
+						"apiKeyAuth": []
 					}
 				],
 				"parameters": [
@@ -441,6 +499,13 @@
 						"required": true,
 						"type": "string",
 						"description": "ID of the user to delete"
+					},
+					{
+						"in": "header",
+						"name": "X-API-Key",
+						"description": "API Key for authentication (alternative to session cookie)",
+						"required": false,
+						"type": "string"
 					}
 				],
 				"responses": {
