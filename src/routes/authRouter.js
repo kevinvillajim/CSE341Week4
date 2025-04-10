@@ -1,6 +1,8 @@
 const express = require("express");
 const passport = require("passport");
 const router = express.Router();
+const authController = require("../controllers/authController");
+const authMiddleware = require("../middleware/auth");
 
 // GitHub OAuth routes
 router.get(
@@ -15,7 +17,7 @@ router.get(
 		session: true,
 	}),
 	(req, res) => {
-		// Successful authentication, redirect to the API docs or your frontend
+		// Successful authentication, redirect to the API docs
 		res.redirect("/api-docs");
 	}
 );
@@ -49,5 +51,12 @@ router.get("/auth/logout", (req, res, next) => {
 		res.json({message: "Successfully logged out"});
 	});
 });
+
+router.get(
+	"/auth/token",
+	authMiddleware.isAuthenticated,
+	authController.generateApiToken
+);
+router.get("/auth/check-token", authController.checkApiToken);
 
 module.exports = router;

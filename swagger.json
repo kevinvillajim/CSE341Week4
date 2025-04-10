@@ -9,15 +9,11 @@
 	"basePath": "/api",
 	"schemes": ["https"],
 	"securityDefinitions": {
-		"cookieAuth": {
-			"type": "apiKey",
-			"in": "cookie",
-			"name": "connect.sid"
-		},
 		"apiKeyAuth": {
 			"type": "apiKey",
 			"in": "header",
-			"name": "X-API-Key"
+			"name": "X-API-Key",
+			"description": "API key para acceder a los endpoints protegidos"
 		}
 	},
 	"tags": [
@@ -71,6 +67,82 @@
 				}
 			}
 		},
+		"/auth/token": {
+			"get": {
+				"tags": ["Authentication"],
+				"summary": "Generate API token",
+				"description": "Generates a new API token for the authenticated user",
+				"security": [
+				],
+				"responses": {
+					"200": {
+						"description": "API token generated successfully",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"message": {"type": "string"},
+								"token": {"type": "string"},
+								"userId": {"type": "string"}
+							}
+						}
+					},
+					"401": {
+						"description": "Unauthorized - Must be logged in"
+					},
+					"500": {
+						"description": "Server error"
+					}
+				}
+			}
+		},
+		"/auth/check-token": {
+			"get": {
+				"tags": ["Authentication"],
+				"summary": "Check API token validity",
+				"description": "Verifies if an API token is valid",
+				"parameters": [
+					{
+						"in": "header",
+						"name": "X-API-Key",
+						"description": "API token to validate",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Token is valid",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"valid": {"type": "boolean", "example": true},
+								"userId": {"type": "string"}
+							}
+						}
+					},
+					"400": {
+						"description": "No token provided",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"valid": {"type": "boolean", "example": false},
+								"message": {"type": "string"}
+							}
+						}
+					},
+					"401": {
+						"description": "Invalid or expired token",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"valid": {"type": "boolean", "example": false},
+								"message": {"type": "string"}
+							}
+						}
+					}
+				}
+			}
+		},
 		"/items": {
 			"get": {
 				"tags": ["Items"],
@@ -104,9 +176,6 @@
 				"summary": "Create a new item",
 				"description": "Creates a new item in the database. Requires authentication via session cookie or API key.",
 				"security": [
-					{
-						"cookieAuth": []
-					},
 					{
 						"apiKeyAuth": []
 					}
@@ -199,9 +268,6 @@
 				"description": "Updates an existing item by its ID. Requires authentication via session cookie or API key.",
 				"security": [
 					{
-						"cookieAuth": []
-					},
-					{
 						"apiKeyAuth": []
 					}
 				],
@@ -261,9 +327,6 @@
 				"summary": "Delete an item",
 				"description": "Deletes an existing item by its ID. Requires authentication via session cookie or API key.",
 				"security": [
-					{
-						"cookieAuth": []
-					},
 					{
 						"apiKeyAuth": []
 					}
@@ -330,9 +393,6 @@
 				"summary": "Create a new user",
 				"description": "Creates a new user in the database. Requires authentication via session cookie or API key.",
 				"security": [
-					{
-						"cookieAuth": []
-					},
 					{
 						"apiKeyAuth": []
 					}
@@ -423,9 +483,6 @@
 				"description": "Updates an existing user by its ID. Requires authentication via session cookie or API key.",
 				"security": [
 					{
-						"cookieAuth": []
-					},
-					{
 						"apiKeyAuth": []
 					}
 				],
@@ -483,11 +540,8 @@
 			"delete": {
 				"tags": ["Users"],
 				"summary": "Delete a user",
-				"description": "Deletes an existing user by its ID. Requires authentication via session cookie or API key.",
+				"description": "Deletes an existing user by its ID. Requires authentication via API key.",
 				"security": [
-					{
-						"cookieAuth": []
-					},
 					{
 						"apiKeyAuth": []
 					}

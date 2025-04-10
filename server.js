@@ -26,7 +26,7 @@ app.use(
 // Session configuration
 app.use(
 	session({
-		secret: process.env.SESSION_SECRET || "your_session_secret",
+		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
 		store: MongoStore.create({
@@ -34,9 +34,9 @@ app.use(
 			collectionName: "sessions",
 		}),
 		cookie: {
-			secure: process.env.NODE_ENV === "production", // Set to true in production
+			secure: process.env.NODE_ENV === "production",
 			httpOnly: true,
-			maxAge: 24 * 60 * 60 * 1000, // 1 day
+			maxAge: 24 * 60 * 60 * 1000,
 		},
 	})
 );
