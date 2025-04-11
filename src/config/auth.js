@@ -29,7 +29,7 @@ passport.use(
 			clientID: process.env.GITHUB_CLIENT_ID,
 			clientSecret: process.env.GITHUB_CLIENT_SECRET,
 			callbackURL:
-				process.env.NODE_ENV === "production"
+				process.env.NODE_ENV !== "development"
 					? "https://cse341week4.onrender.com/api/auth/github/callback"
 					: "http://localhost:3000/api/auth/github/callback",
 		},
