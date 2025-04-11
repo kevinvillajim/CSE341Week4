@@ -1,4 +1,5 @@
 const express = require("express");
+const MongoStore = require("connect-mongo");
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
 const dotenv = require("dotenv");
@@ -7,6 +8,7 @@ const database = require("./src/config/database");
 const cors = require("cors");
 const session = require("express-session");
 const authConfig = require("./src/config/auth");
+
 
 dotenv.config();
 const app = express();
@@ -28,9 +30,15 @@ app.use(
 		secret: process.env.SESSION_SECRET || "your-secret-key",
 		resave: false,
 		saveUninitialized: false,
+		store: MongoStore.create({
+			mongoUrl: process.env.MONGODB_URI,
+			collectionName: "sessions",
+		}),
 		cookie: {
-			secure: process.env.NODE_ENV !== "development",
+			secure: process.env.NODE_ENV === "production", 
+			httpOnly: true,
 			maxAge: 24 * 60 * 60 * 1000, // 24 hours
+			sameSite: "lax",
 		},
 	})
 );
