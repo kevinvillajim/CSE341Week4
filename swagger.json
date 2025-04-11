@@ -14,6 +14,12 @@
 			"in": "header",
 			"name": "X-API-Key",
 			"description": "API key para acceder a los endpoints protegidos"
+		},
+		"github_oauth": {
+			"type": "oauth2",
+			"flow": "implicit",
+			"authorizationUrl": "https://cse341week4.onrender.com/api/auth/github",
+			"description": "GitHub OAuth authentication"
 		}
 	},
 	"tags": [
@@ -43,6 +49,27 @@
 				}
 			}
 		},
+		"/auth/github/callback": {
+			"get": {
+				"tags": ["Authentication"],
+				"summary": "GitHub OAuth Callback",
+				"description": "Callback endpoint for GitHub OAuth flow",
+				"parameters": [
+					{
+						"name": "code",
+						"in": "query",
+						"required": false,
+						"type": "string",
+						"description": "Authorization code from GitHub"
+					}
+				],
+				"responses": {
+					"302": {
+						"description": "Redirects to the application after successful authentication"
+					}
+				}
+			}
+		},
 		"/auth/status": {
 			"get": {
 				"tags": ["Authentication"],
@@ -50,7 +77,21 @@
 				"description": "Returns the current authentication status and user info if authenticated",
 				"responses": {
 					"200": {
-						"description": "Authentication status"
+						"description": "Authentication status",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"isAuthenticated": {"type": "boolean"},
+								"user": {
+									"type": "object",
+									"properties": {
+										"id": {"type": "string"},
+										"username": {"type": "string"},
+										"displayName": {"type": "string"}
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -63,6 +104,9 @@
 				"responses": {
 					"200": {
 						"description": "Successfully logged out"
+					},
+					"302": {
+						"description": "Redirects after logout"
 					}
 				}
 			}
@@ -73,6 +117,9 @@
 				"summary": "Generate API token",
 				"description": "Generates a new API token for the authenticated user",
 				"security": [
+					{
+						"github_oauth": []
+					}
 				],
 				"responses": {
 					"200": {
@@ -178,6 +225,9 @@
 				"security": [
 					{
 						"apiKeyAuth": []
+					},
+					{
+						"github_oauth": []
 					}
 				],
 				"parameters": [
@@ -269,6 +319,9 @@
 				"security": [
 					{
 						"apiKeyAuth": []
+					},
+					{
+						"github_oauth": []
 					}
 				],
 				"parameters": [
@@ -329,6 +382,9 @@
 				"security": [
 					{
 						"apiKeyAuth": []
+					},
+					{
+						"github_oauth": []
 					}
 				],
 				"parameters": [
@@ -395,6 +451,9 @@
 				"security": [
 					{
 						"apiKeyAuth": []
+					},
+					{
+						"github_oauth": []
 					}
 				],
 				"parameters": [
@@ -484,6 +543,9 @@
 				"security": [
 					{
 						"apiKeyAuth": []
+					},
+					{
+						"github_oauth": []
 					}
 				],
 				"parameters": [
@@ -544,6 +606,9 @@
 				"security": [
 					{
 						"apiKeyAuth": []
+					},
+					{
+						"github_oauth": []
 					}
 				],
 				"parameters": [

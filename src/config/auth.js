@@ -6,6 +6,15 @@ dotenv.config();
 
 // Configure GitHub strategy for Passport
 module.exports.configurePassport = () => {
+	// Verify required env variables
+	if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
+		console.error("GitHub OAuth credentials are missing!");
+		console.error(
+			"Please set GITHUB_CLIENT_ID and GITHUB_CLIENT_SECRET in your .env file"
+		);
+		process.exit(1);
+	}
+
 	// Set up GitHub strategy
 	passport.use(
 		new GitHubStrategy(

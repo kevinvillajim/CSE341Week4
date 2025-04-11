@@ -18,14 +18,14 @@ app.use(
 		origin: "*",
 		methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 		allowedHeaders: ["Content-Type", "Authorization"],
-		credentials: true,
+		credentials: true, // Important for authentication cookies
 	})
 );
 
 // Configure session middleware
 app.use(
 	session({
-		secret: process.env.SESSION_SECRET,
+		secret: process.env.SESSION_SECRET || "your-secret-key",
 		resave: false,
 		saveUninitialized: false,
 		cookie: {
@@ -44,7 +44,7 @@ app.use(passport.session());
 app.use(express.json());
 
 // Configure Swagger based on environment
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = process.env.NODE_ENV !== "development";
 if (isProduction) {
 	swaggerDocument.host = "cse341week4.onrender.com";
 	swaggerDocument.schemes = ["https"];
