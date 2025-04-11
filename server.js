@@ -14,8 +14,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.set("trust proxy", 1);
-
 // Configure CORS with credentials support
 app.use(
 	cors({
@@ -35,15 +33,24 @@ app.use(
 		store: MongoStore.create({
 			mongoUrl: process.env.MONGODB_URI,
 			collectionName: "sessions",
+			ttl: 24 * 60 * 60, // Session TTL (1 day)
+			autoRemove: "native", // Use MongoDB's TTL index
+			stringify: false, // Don't stringify session data
 		}),
 		cookie: {
-			secure: process.env.NODE_ENV === "production", 
+			secure: process.env.NODE_ENV === "production",
 			httpOnly: true,
 			maxAge: 24 * 60 * 60 * 1000, // 24 hours
-			sameSite: "lax",
+			sameSite: "lax", // Allow cookies with redirects
+			path: "/",
 		},
+		name: "cse341.sid", // Custom session name
 	})
 );
+
+if (process.env.NODE_ENV === "production") {
+	app.set("trust proxy", 1);
+}
 
 // Configure and initialize Passport for authentication
 const passport = authConfig.configurePassport();

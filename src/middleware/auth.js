@@ -12,8 +12,14 @@ exports.isAuthenticated = (req, res, next) => {
  * Returns authentication status
  */
 exports.getAuthStatus = (req, res) => {
+	console.log("Session ID:", req.sessionID);
+	console.log("Session data:", req.session);
+	console.log("Is authenticated:", req.isAuthenticated());
+	console.log("User:", req.user);
+
 	res.json({
 		isAuthenticated: req.isAuthenticated(),
+		sessionExists: !!req.session,
 		user: req.isAuthenticated()
 			? {
 					id: req.user.id,
