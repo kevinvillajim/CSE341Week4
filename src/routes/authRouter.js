@@ -13,7 +13,7 @@ router.get(
 router.get(
 	"/auth/github/callback",
 	passport.authenticate("github", {
-		failureRedirect: "/api-docs",
+		failureRedirect: "/",
 		session: true,
 	}),
 	(req, res) => {
