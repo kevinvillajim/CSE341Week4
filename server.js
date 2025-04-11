@@ -50,7 +50,7 @@ app.use(authMiddleware.injectAuthInfo);
 
 const isProduction = process.env.NODE_ENV === "production";
 if (isProduction) {
-	swaggerDocument.host = "cse341week3-gtfy.onrender.com";
+	swaggerDocument.host = "cse341week4.onrender.com";
 	swaggerDocument.schemes = ["https"];
 } else {
 	swaggerDocument.host = `localhost:${PORT}`;
