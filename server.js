@@ -34,7 +34,7 @@ app.use(
 			collectionName: "sessions",
 		}),
 		cookie: {
-			secure: process.env.NODE_ENV === "production",
+			secure: process.env.NODE_ENV !== "development",
 			httpOnly: true,
 			maxAge: 24 * 60 * 60 * 1000,
 		},
@@ -48,7 +48,7 @@ app.use(passport.session());
 // Add auth info to all requests
 app.use(authMiddleware.injectAuthInfo);
 
-const isProduction = process.env.NODE_ENV === "production";
+const isProduction = process.env.NODE_ENV !== "development";
 if (isProduction) {
 	swaggerDocument.host = "cse341week4.onrender.com";
 	swaggerDocument.schemes = ["https"];
