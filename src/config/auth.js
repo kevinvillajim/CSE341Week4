@@ -29,7 +29,14 @@ module.exports.configurePassport = () => {
 						  }/api/auth/github/callback`,
 			},
 			function (accessToken, refreshToken, profile, done) {
-				return done(null, profile);
+				console.log("GitHub profile:", profile);
+
+				return done(null, {
+					id: profile.id,
+					username: profile.username,
+					displayName: profile.displayName,
+					photos: profile.photos,
+				});
 			}
 		)
 	);
