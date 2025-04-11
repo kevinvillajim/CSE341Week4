@@ -30,7 +30,7 @@ passport.use(
 			clientSecret: process.env.GITHUB_CLIENT_SECRET,
 			callbackURL:
 				process.env.NODE_ENV === "production"
-					? "https://cse341week3-gtfy.onrender.com/api/auth/github/callback"
+					? "https://cse341week4.onrender.com/api/auth/github/callback"
 					: "http://localhost:3000/api/auth/github/callback",
 		},
 		async (accessToken, refreshToken, profile, done) => {
