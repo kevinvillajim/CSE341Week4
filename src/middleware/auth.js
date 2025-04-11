@@ -1,32 +1,38 @@
-const dotenv = require("dotenv");
-dotenv.config();
-
-const API_KEY = process.env.SESSION_SECRET;
-
+/**
+ * Checks if user is authenticated
+ */
 exports.isAuthenticated = (req, res, next) => {
-	// Check for session-based authentication first
 	if (req.isAuthenticated()) {
 		return next();
 	}
+	res.status(401).json({message: "Unauthorized: Please log in"});
+};
 
-	// If not authenticated via session, check for API key
-	const apiKey = req.header("X-API-Key");
-
-	if (apiKey && apiKey === API_KEY) {
-		// Allow access if API key is valid
-		return next();
-	}
-
-	// If neither authentication method is valid, return 401
-	res.status(401).json({
-		message:
-			"Unauthorized: You must be logged in or provide a valid API key to access this resource",
+/**
+ * Returns authentication status
+ */
+exports.getAuthStatus = (req, res) => {
+	res.json({
+		isAuthenticated: req.isAuthenticated(),
+		user: req.isAuthenticated()
+			? {
+					id: req.user.id,
+					username: req.user.username,
+					displayName: req.user.displayName,
+					photos: req.user.photos,
+			  }
+			: null,
 	});
 };
 
-// Middleware to make authentication info available to all templates
-exports.injectAuthInfo = (req, res, next) => {
-	res.locals.isAuthenticated = req.isAuthenticated();
-	res.locals.user = req.user || null;
-	next();
+/**
+ * Logs out the user
+ */
+exports.logout = (req, res) => {
+	req.logout(function (err) {
+		if (err) {
+			return next(err);
+		}
+		res.redirect("/");
+	});
 };

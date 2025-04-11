@@ -6,49 +6,45 @@ const routes = require("./src/routes/index");
 const database = require("./src/config/database");
 const cors = require("cors");
 const session = require("express-session");
-const MongoStore = require("connect-mongo");
-const passport = require("./src/config/auth");
-const authMiddleware = require("./src/middleware/auth");
+const authConfig = require("./src/config/auth");
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Configure CORS with credentials support
 app.use(
 	cors({
 		origin: "*",
 		methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 		allowedHeaders: ["Content-Type", "Authorization"],
-		credentials: true, // This is important for cookies/sessions
+		credentials: true,
 	})
 );
 
-// Session configuration
+// Configure session middleware
 app.use(
 	session({
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
-		store: MongoStore.create({
-			mongoUrl: process.env.MONGODB_URI,
-			collectionName: "sessions",
-		}),
 		cookie: {
 			secure: process.env.NODE_ENV !== "development",
-			httpOnly: true,
-			maxAge: 24 * 60 * 60 * 1000,
+			maxAge: 24 * 60 * 60 * 1000, // 24 hours
 		},
 	})
 );
 
-// Initialize Passport and restore authentication state from session
+// Configure and initialize Passport for authentication
+const passport = authConfig.configurePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Add auth info to all requests
-app.use(authMiddleware.injectAuthInfo);
+// Parse JSON request bodies
+app.use(express.json());
 
-const isProduction = process.env.NODE_ENV !== "development";
+// Configure Swagger based on environment
+const isProduction = process.env.NODE_ENV === "production";
 if (isProduction) {
 	swaggerDocument.host = "cse341week4.onrender.com";
 	swaggerDocument.schemes = ["https"];
@@ -57,11 +53,27 @@ if (isProduction) {
 	swaggerDocument.schemes = ["http"];
 }
 
-app.use(express.json());
+// Add auth to swagger if not already there
+if (!swaggerDocument.securityDefinitions) {
+	swaggerDocument.securityDefinitions = {
+		github_auth: {
+			type: "oauth2",
+			authorizationUrl: "/api/auth/github",
+			flow: "implicit",
+		},
+	};
+}
 
+// Routes
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api", routes);
 
+// Root route redirect to docs
+app.get("/", (req, res) => {
+	res.redirect("/api-docs");
+});
+
+// Start server
 async function startServer() {
 	try {
 		await database.connect();
